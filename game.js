@@ -17,48 +17,46 @@ let paused = false;
 let score = 0;
 let level = 1;
 let powerUp = null;
-let alienSpeedMultiplier = 0.5; // Start with a lower speed multiplier
+let alienSpeedMultiplier = 0.5;
 
 const player = {
-  x: CANVAS_WIDTH / 2 - 37.5, // Adjusted for new width
-  y: CANVAS_HEIGHT - 90, // Adjusted for new height
-  width: 75, // Increased width
-  height: 60, // Increased height
+  x: CANVAS_WIDTH / 2 - 37.5,
+  y: CANVAS_HEIGHT - 90,
+  width: 75,
+  height: 60,
   speed: 5,
   image: new Image(),
 };
 
-player.image.src = "assets/space.png"; // Player image
+player.image.src = "assets/space.png";
 player.image.onerror = () => console.error("Failed to load player image");
 
 const bullets = [];
 const aliens = [];
 const keys = {};
 
-// Create an audio context
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-// Function to play shooting sound
 function playShootingSound() {
-  if (paused) return; // Do not play sound if paused
+  if (paused) return;
 
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
 
   oscillator.type = "square";
-  oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // Frequency in Hz
-  gainNode.gain.setValueAtTime(0.1, audioContext.currentTime); // Volume
+  oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+  gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
 
   oscillator.connect(gainNode);
   gainNode.connect(audioContext.destination);
 
   oscillator.start();
-  oscillator.stop(audioContext.currentTime + 0.1); // Play sound for 0.1 seconds
+  oscillator.stop(audioContext.currentTime + 0.1);
 }
 
 function createAlien(type = "normal") {
   const alienImage = new Image();
-  alienImage.src = "assets/enemy.png"; // Alien image
+  alienImage.src = "assets/enemy.png";
   alienImage.onerror = () => console.error("Failed to load alien image");
 
   return {
@@ -94,7 +92,6 @@ function drawRect(x, y, width, height, color) {
 function update() {
   if (gameOver || paused) return;
 
-  // Player movement
   if (keys["ArrowLeft"] && player.x > 0) {
     player.x -= player.speed;
   }
@@ -102,7 +99,6 @@ function update() {
     player.x += player.speed;
   }
 
-  // Update bullets
   bullets.forEach((bullet, index) => {
     bullet.y -= bullet.speed;
     if (bullet.y < 0) {
@@ -110,7 +106,6 @@ function update() {
     }
   });
 
-  // Update aliens
   aliens.forEach((alien, alienIndex) => {
     alien.y += alien.speed;
     if (alien.y > CANVAS_HEIGHT) {
@@ -119,7 +114,6 @@ function update() {
       gameOverElement.style.display = "block";
     }
 
-    // Collision detection
     bullets.forEach((bullet, bulletIndex) => {
       if (
         bullet.x < alien.x + alien.width &&
@@ -138,12 +132,10 @@ function update() {
     });
   });
 
-  // Spawn new aliens
   if (Math.random() < 0.02) {
     aliens.push(createAlien());
   }
 
-  // Spawn boss
   if (
     score > 0 &&
     score % 100 === 0 &&
@@ -152,15 +144,13 @@ function update() {
     aliens.push(createAlien("boss"));
   }
 
-  // Level up
   if (score > level * 100) {
     level++;
     levelElement.textContent = `Level: ${level}`;
     player.speed += 0.5;
-    alienSpeedMultiplier += 0.05; // Increase alien speed multiplier more slowly
+    alienSpeedMultiplier += 0.05;
   }
 
-  // Power-up
   if (Math.random() < 0.001) {
     powerUp = Math.random() < 0.5 ? "spread" : "rapid";
     powerUpElement.textContent = `Power-up: ${powerUp}`;
@@ -174,15 +164,12 @@ function update() {
 function draw() {
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-  // Draw player
   drawPlayer();
 
-  // Draw bullets
   bullets.forEach((bullet) => {
     drawRect(bullet.x, bullet.y, bullet.width, bullet.height, bullet.color);
   });
 
-  // Draw aliens
   aliens.forEach((alien) => {
     drawAlien(alien);
   });
@@ -197,7 +184,7 @@ function gameLoop() {
 }
 
 function handleKeyDown(e) {
-  if (paused) return; // Do not handle key down if paused
+  if (paused) return;
 
   keys[e.key] = true;
   if (e.key === " ") {
@@ -206,29 +193,29 @@ function handleKeyDown(e) {
 }
 
 function handleKeyUp(e) {
-  if (paused) return; // Do not handle key up if paused
+  if (paused) return;
 
   keys[e.key] = false;
 }
 
 function handleMouseMove(e) {
-  if (paused) return; // Do not handle mouse move if paused
+  if (paused) return;
 
   const rect = canvas.getBoundingClientRect();
   player.x = e.clientX - rect.left - player.width / 2;
 }
 
 function handleMouseClick() {
-  if (paused) return; // Do not handle mouse click if paused
+  if (paused) return;
 
   shootBullet();
 }
 
 function shootBullet() {
-  if (paused) return; // Do not shoot if paused
+  if (paused) return;
 
-  console.log("Shooting bullet"); // Debug log
-  playShootingSound(); // Play shooting sound when shooting
+  console.log("Shooting bullet");
+  playShootingSound();
 
   if (powerUp === "spread") {
     for (let i = -1; i <= 1; i++) {
@@ -272,9 +259,9 @@ function resetGame() {
   score = 0;
   level = 1;
   powerUp = null;
-  alienSpeedMultiplier = 0.5; // Reset alien speed multiplier
-  player.x = CANVAS_WIDTH / 2 - 37.5; // Adjusted for new width
-  player.y = CANVAS_HEIGHT - 90; // Adjusted for new height
+  alienSpeedMultiplier = 0.5;
+  player.x = CANVAS_WIDTH / 2 - 37.5;
+  player.y = CANVAS_HEIGHT - 90;
   bullets.length = 0;
   aliens.length = 0;
   gameOverElement.style.display = "none";
