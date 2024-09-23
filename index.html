@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alien Invaders</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="gameContainer">
+      <canvas id="gameCanvas"></canvas>
+      <div id="gameOver">
+        <div>Game Over!</div>
+        <button id="playAgain">Play Again</button>
+      </div>
+      <div id="score">Score: 0</div>
+      <div id="level">Level: 1</div>
+      <div id="powerUp">Power-up: None</div>
+      <div id="instructions">
+        Use arrow keys or mouse to move, spacebar or click to shoot
+      </div>
+      <button id="pausePlay">Pause</button>
+      <!-- Added Pause/Play button -->
+    </div>
+    <script src="game.js"></script>
+  </body>
+</html>
